@@ -10,6 +10,7 @@ import UserHeader from "@/components/user/UserHeader";
 import RequestAdmin from "@/components/user/RequestAdmin";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import UserToUserChats from "@/components/user/UserToUserChats";
 export default function Home({ session }: { session: Session }) {
   useSocket();
 
@@ -41,6 +42,7 @@ export default function Home({ session }: { session: Session }) {
               <UserHeader />
               <main>
                 <RequestAdmin />
+                <UserToUserChats />
               </main>
             </>
           )}
