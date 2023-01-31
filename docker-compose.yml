@@ -1,0 +1,24 @@
+version: "3.8"
+
+services:
+  postgres:
+    container_name: next_postgres
+    image: postgres
+    restart: always
+    environment:
+      - DATABASE_HOST=127.0.0.1
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_DB=realtime_esgi
+    ports:
+      - 5432:5432
+    volumes:
+      - ./postgres:/var/lib/postgresql/data
+
+  next:
+    build: .
+    ports:
+      - "3000:3000"
+    depends_on:
+      - postgres
+    command: sh -c "yarn prisma migrate deploy && yarn prisma generate && yarn dev"
