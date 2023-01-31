@@ -51,6 +51,8 @@ model User {
   image         String?
   accounts      Account[]
   sessions      Session[]
+  isAvailable   Boolean   @default(false)
+  adminDiscussionRequests AdminDiscussionRequest[]
 }
 
 model VerificationToken {
@@ -59,4 +61,19 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+enum AdminDiscussionRequestStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+}
+
+model AdminDiscussionRequest {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  status    AdminDiscussionRequestStatus @default(PENDING)
+
+
 }

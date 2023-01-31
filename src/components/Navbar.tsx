@@ -3,6 +3,7 @@ import { Menu, Transition } from "@headlessui/react";
 import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import { reloadSession } from "@/lib/reloadSession";
+import { useRouter } from "next/router";
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
@@ -10,17 +11,18 @@ function classNames(...classes: string[]) {
 
 export default function Navbar() {
   const session = useSession();
-  console.log(session);
   const handleSignout = () => signOut({ callbackUrl: "/" });
+
+  const router = useRouter();
 
   const handleMakeAdmin = async () => {
     await fetch("/api/make-admin", { method: "POST" });
-    reloadSession();
+    router.reload();
   };
 
   const handleMakeUser = async () => {
     await fetch("/api/make-user", { method: "POST" });
-    reloadSession();
+    router.reload();
   };
 
   return (

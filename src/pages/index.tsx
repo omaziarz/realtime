@@ -1,11 +1,20 @@
-import Head from 'next/head'
-import {getSession} from "next-auth/react";
-import {GetServerSideProps} from "next";
+import Head from "next/head";
+import { getSession } from "next-auth/react";
+import { GetServerSideProps } from "next";
 import Navbar from "@/components/Navbar";
 import useSocket from "@/hooks/useSocket";
-
-export default function Home() {
+import { Session } from "next-auth";
+import ChatRequestsList from "@/components/admin/ChatRequestsList";
+import AdminHeader from "@/components/admin/AdminHeader";
+import UserHeader from "@/components/user/UserHeader";
+import RequestAdmin from "@/components/user/RequestAdmin";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+export default function Home({ session }: { session: Session }) {
   useSocket();
+
+  // @ts-ignore
+  const role = session.role;
 
   return (
     <>
@@ -15,30 +24,48 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main>
-        <Navbar />
-      </main>
+
+      <Navbar />
+
+      <div className="py-10 bg-slate-100 h-full">
+        <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
+          {role === "ADMIN" ? (
+            <>
+              <AdminHeader />
+              <main>
+                <ChatRequestsList />
+              </main>
+            </>
+          ) : (
+            <>
+              <UserHeader />
+              <main>
+                <RequestAdmin />
+              </main>
+            </>
+          )}
+        </div>
+        <ToastContainer />
+      </div>
     </>
-  )
+  );
 }
 
-export const getServerSideProps:GetServerSideProps = async (context) => {
+export const getServerSideProps: GetServerSideProps = async (context) => {
   const session = await getSession(context);
 
   if (!session) {
     return {
       redirect: {
-        destination: '/api/auth/signin',
+        destination: "/api/auth/signin",
         permanent: false,
       },
-    }
+    };
   }
 
   return {
     props: {
-      session
-    }
-  }
-}
-
-
+      session,
+    },
+  };
+};

@@ -1,9 +1,8 @@
 import { NextApiHandler } from "next";
 import { secureApiRoute } from "@/lib/secureApiRoute";
-import { PrismaClient } from "@prisma/client";
 
 const handler: NextApiHandler = async (req, res) => {
-  const session = await secureApiRoute(req, res, ["USER"]);
+  const session = await secureApiRoute(req, res, ["ADMIN"]);
   if (!session) {
     res.status(401).end();
     return;
@@ -14,13 +13,12 @@ const handler: NextApiHandler = async (req, res) => {
     return;
   }
 
-  await prisma?.user.update({
-    data: { role: "ADMIN" },
-    // @ts-ignore
-    where: { id: session?.id as string },
-  });
-
-  res.status(200).json({ message: "Success" });
+  return res.status(200).json(
+    await prisma?.user.update({
+      data: { isAvailable: false },
+      where: { id: session?.id as string },
+    })
+  );
 };
 
 export default handler;

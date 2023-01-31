@@ -16,10 +16,22 @@ export const authOptions = {
     strategy: "database",
   },
   callbacks: {
-    session: async ({ session, user }) => {
+    session: async ({ session, token, user }) => {
+      const getToken = await prisma.account.findFirst({
+        where: {
+          userId: user.id,
+        },
+      });
+
+      let accessToken = null;
+      if (getToken) {
+        accessToken = getToken.access_token;
+      }
+
+      // @ts-ignore
+      session.accessToken = accessToken;
       // @ts-ignore
       session.id = user.id;
-      console.log(user);
       // @ts-ignore
       session.role = user.role;
       return Promise.resolve(session);
