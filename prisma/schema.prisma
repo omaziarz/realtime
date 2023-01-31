@@ -55,6 +55,9 @@ model User {
   adminDiscussionRequests AdminDiscussionRequest[]
   adminDiscussionChatMessages AdminDiscussionChatMessage[]
   adminDiscussionChats AdminDiscussionChat[]
+
+  sentMessages UserMessage[] @relation("sentMessages")
+  receivedMessages UserMessage[] @relation("receivedMessages")
 }
 
 model VerificationToken {
@@ -98,6 +101,19 @@ model AdminDiscussionChatMessage {
 
   senderId String
   sender   User @relation(fields: [senderId], references: [id], onDelete: Cascade)
+  content String
+  sentAt DateTime @default(now())
+}
+
+model UserMessage {
+  messageId String @id @default(cuid())
+
+  senderId String
+  sender   User @relation(fields: [senderId], references: [id], onDelete: Cascade, "sentMessages")
+
+  receiverId String
+  receiver   User @relation(fields: [receiverId], references: [id], onDelete: Cascade, "receivedMessages")
+
   content String
   sentAt DateTime @default(now())
 }

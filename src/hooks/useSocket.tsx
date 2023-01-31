@@ -53,7 +53,7 @@ export default function useSocket() {
 
       socket.on("message", async ({ chatId }: { chatId: string }) => {
         console.log("message here", chatId);
-        await queryClient.invalidateQueries(["messages", chatId]);
+        await queryClient.invalidateQueries(["messages"]);
       });
     });
 
