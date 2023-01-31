@@ -16,9 +16,6 @@ const handler: NextApiHandler = async (req, res) => {
   const discussionRequest = await prisma?.adminDiscussionRequest.update({
     data: {
       status: "REJECTED",
-      adminDiscussionChat: {
-        delete: true,
-      },
     },
     where: {
       userId: req.body.id,

@@ -19,8 +19,13 @@ const handler: NextApiHandler = async (req, res) => {
     data: {
       status: "ACCEPTED",
       adminDiscussionChat: {
-        create: {
-          handlingAdminId: session.id,
+        upsert: {
+          create: {
+            handlingAdminId: session.id,
+          },
+          update: {
+            handlingAdminId: session.id,
+          },
         },
       },
     },
