@@ -17,6 +17,9 @@ const handler: NextApiHandler = async (req, res) => {
     where: {
       userId: session.id,
     },
+    include: {
+      adminDiscussionChat: true,
+    },
   });
 
   res.status(200).json(discussionRequest || null);

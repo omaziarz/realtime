@@ -50,6 +50,11 @@ export default function useSocket() {
         console.log("update-discussion-request");
         await queryClient.invalidateQueries(["discussion-request"]);
       });
+
+      socket.on("message", async ({ chatId }: { chatId: string }) => {
+        console.log("message here", chatId);
+        await queryClient.invalidateQueries(["messages", chatId]);
+      });
     });
 
     socket.on("disconnect", () => {

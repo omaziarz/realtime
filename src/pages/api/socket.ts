@@ -31,9 +31,27 @@ const handler: NextApiHandler = async (req, res) => {
       if (!user) {
         socket.disconnect();
       }
+
+      socket.on("chat_join", (data) => {
+        console.log("chat-join", data);
+        socket.join(data.chatId);
+      });
+
+      socket.on("chat_leave", (data) => {
+        console.log("chat-leave", data);
+        socket.leave(data.chatId);
+      });
+
+      socket.on("message", (data) => {
+        console.log("message", data);
+        console.log("rooms", socket.rooms);
+        io.in(data.chatId).emit("message", { chatId: data.chatId });
+      });
+
       if (socket.data.user.role === "ADMIN") {
         socket.join(Rooms.ADMIN);
         console.log("admin connected");
+
         socket.on("admin-available", () => {
           console.log("admin-available");
           socket.join(Rooms.ADMIN_AVAILABLE);

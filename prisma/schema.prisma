@@ -53,6 +53,8 @@ model User {
   sessions      Session[]
   isAvailable   Boolean   @default(false)
   adminDiscussionRequests AdminDiscussionRequest[]
+  adminDiscussionChatMessages AdminDiscussionChatMessage[]
+  adminDiscussionChats AdminDiscussionChat[]
 }
 
 model VerificationToken {
@@ -74,6 +76,28 @@ model AdminDiscussionRequest {
   userId    String   @unique
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   status    AdminDiscussionRequestStatus @default(PENDING)
+  adminDiscussionChat AdminDiscussionChat?
+}
 
+model AdminDiscussionChat {
+  adminDiscussionRequestId String @id
+  adminDiscussionRequest   AdminDiscussionRequest @relation(fields: [adminDiscussionRequestId], references: [id], onDelete: Cascade)
+  adminDiscussionChatMessages AdminDiscussionChatMessage[]
 
+  handlingAdminId String @unique
+  handlingAdmin   User @relation(fields: [handlingAdminId], references: [id], onDelete: Cascade)
+
+  canUserSend Boolean @default(true)
+
+}
+
+model AdminDiscussionChatMessage {
+  messageId String @id @default(cuid())
+  adminDiscussionChatId String
+  adminDiscussionChat   AdminDiscussionChat @relation(fields: [adminDiscussionChatId], references: [adminDiscussionRequestId], onDelete: Cascade)
+
+  senderId String
+  sender   User @relation(fields: [senderId], references: [id], onDelete: Cascade)
+  content String
+  sentAt DateTime @default(now())
 }

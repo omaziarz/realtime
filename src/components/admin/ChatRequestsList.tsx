@@ -2,6 +2,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import { AdminDiscussionRequest, User } from "@prisma/client";
 import Loader from "@/components/Loader";
+import AdminDiscussionModal from "@/components/AdminDiscussionModal";
 
 async function getProfile() {
   const res = await fetch("/api/me");
@@ -161,12 +162,7 @@ export default function ChatRequestsList() {
               {item.status === "ACCEPTED" && (
                 <div className="flex gap-2 items-center">
                   <div className="flex-shrink-0 self-center flex">
-                    <button
-                      className="inline-flex items-center rounded border border-transparent bg-indigo-600 px-2.5 py-1.5 text-xs font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                      type="button"
-                    >
-                      ouvrir le chat
-                    </button>
+                    <AdminDiscussionModal chatId={item.id} />
                   </div>
                   <div className="flex-shrink-0 self-center flex">
                     <button

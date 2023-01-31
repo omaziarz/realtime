@@ -18,6 +18,11 @@ const handler: NextApiHandler = async (req, res) => {
   const discussionRequest = await prisma?.adminDiscussionRequest.update({
     data: {
       status: "ACCEPTED",
+      adminDiscussionChat: {
+        create: {
+          handlingAdminId: session.id,
+        },
+      },
     },
     where: {
       userId: req.body.id,

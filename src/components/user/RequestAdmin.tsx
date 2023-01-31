@@ -1,6 +1,7 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import Loader from "@/components/Loader";
-import { AdminDiscussionRequest } from "@prisma/client";
+import { AdminDiscussionChat, AdminDiscussionRequest } from "@prisma/client";
+import AdminDiscussionModal from "@/components/AdminDiscussionModal";
 
 async function getAvailableAdmins() {
   const res = await fetch("/api/customer/admins/count");
@@ -11,7 +12,9 @@ async function getAvailableAdmins() {
 async function getDiscussionRequest() {
   const res = await fetch("/api/customer/discussion/");
   const data = await res.json();
-  return data as AdminDiscussionRequest;
+  return data as AdminDiscussionRequest & {
+    adminDiscussionChat: AdminDiscussionChat | null;
+  };
 }
 async function requestDiscussionWithAdmin() {
   const res = await fetch("/api/customer/discussion/request", {
@@ -50,9 +53,9 @@ export default function RequestAdmin() {
         return <p className="mt-4">Demande en attente...</p>;
       if (queryDiscussionRequest.data.status === "ACCEPTED")
         return (
-          <button className="mt-4 inline-flex items-center rounded border border-transparent bg-indigo-600 px-2.5 py-1.5 text-xs font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
-            ouvrir le chat
-          </button>
+          <div className="mt-4">
+            <AdminDiscussionModal chatId={queryDiscussionRequest.data.id} />
+          </div>
         );
       if (queryDiscussionRequest.data.status === "REJECTED") {
         return (
